@@ -1,69 +1,112 @@
 ﻿Random random = new Random();
-
-// Variables
-int[] randomNumbers = new int[10];
-bool loopStop = false;
-int counter = 1;
-randomNumbers[0] = random.Next(1, 21);
-
-// Generate Numbers
-while (counter <= 10)
+bool retryGame = true;
+do
 {
-    int currentNumber = random.Next(1, 21);
-    bool addCheck = true;
 
-    foreach (int checkNumber in randomNumbers)
+
+    // Variables
+    int[] randomNumbers = new int[10];
+
+    int generateCounter = 1;
+    int gameLoopCounter = 0;
+    bool gameResult = true;
+    randomNumbers[0] = random.Next(1, 21);
+
+    // Generate Numbers
+    while (generateCounter < 10)
     {
-        if (checkNumber == currentNumber)
+        int currentNumber = random.Next(1, 21);
+        bool addCheck = true;
+
+        foreach (int checkNumber in randomNumbers)
         {
-            addCheck = false;
-            break;
+            if (checkNumber == currentNumber)
+            {
+                addCheck = false;
+                break;
+            }
+        }
+        if (addCheck)
+        {
+            randomNumbers[generateCounter] = currentNumber;
+            generateCounter++;
         }
     }
-    if (addCheck)
+    // Game
+    int[] previouslyNumbers = new int[5];
+    do
     {
-        randomNumbers[counter] = currentNumber;
-        counter++;
+        bool numberFound = false;
+
+        Console.Write($"Enter {gameLoopCounter + 1}. Number: ");
+        string? input = Console.ReadLine();
+
+        if (int.TryParse(input, out int userInput))
+        {
+            if (userInput > 0 && userInput < 21 && !previouslyNumbers.Contains(userInput))
+            {
+                foreach (int checkNumber in randomNumbers)
+                {
+                    if (checkNumber == userInput)
+                    {
+                        numberFound = true;
+                        gameResult = false;
+                        break;
+                    }
+                }
+                previouslyNumbers[gameLoopCounter] = userInput;
+                gameLoopCounter++;
+            }
+            else
+            {
+                Console.WriteLine("Please enter a number between 1 and 20 or don't use the same numbers you used before.\n");
+                continue;
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter a valid number.\n");
+
+            continue; // Hatalı girişte döngünün başına dön
+        }
+        if (numberFound)
+        {
+            break;
+        }
+    } while (gameLoopCounter < 5);
+
+    // Result
+    if (!gameResult)
+    {
+        Console.WriteLine();
+        Console.WriteLine("You Lose.");
+        Console.ReadKey();
     }
-}
+    else
+    {
+        Console.WriteLine();
+        Console.WriteLine("You Won");
+        Console.ReadKey();
+    }
 
-foreach (int num in randomNumbers)
-{
-    Console.WriteLine(num);
-}
+    Console.WriteLine("\nNumbers are: ");
 
-// Game
-for (int i = 0; i < 5; i++)
-{
-
-    Console.Write($"Enter {i + 1}. Number: ");
-    int userInput = Convert.ToInt32(Console.ReadLine());
-
-    loopStop = false;
-
+    Array.Sort(randomNumbers);
     foreach (int number in randomNumbers)
     {
-        if (number == userInput)
-        {
-
-            loopStop = true;
-            break;
-        }
+        Console.Write(number + " ");
     }
-    if (loopStop)
+
+    Console.WriteLine();
+    Console.Write("\nThe game will restart. If you want to continue, press any key. If not, press 'q' to exit: ");
+    string response = Console.ReadLine();
+
+    if (response == "q")
     {
         break;
     }
-}
+    Console.Clear();
 
-// Result
-if (loopStop)
-{
-    Console.WriteLine("You Lose.");
-    Console.ReadKey();
-}
-else
-{
-    Console.WriteLine("You Won");
-    Console.ReadKey();
-}
+
+
+} while (retryGame);
