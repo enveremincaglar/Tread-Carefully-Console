@@ -7,7 +7,7 @@ int counter = 1;
 randomNumbers[0] = random.Next(1, 21);
 
 // Generate Numbers
-while (counter < 10)
+while (counter <= 10)
 {
     int currentNumber = random.Next(1, 21);
     bool addCheck = true;
@@ -25,6 +25,11 @@ while (counter < 10)
         randomNumbers[counter] = currentNumber;
         counter++;
     }
+}
+
+foreach (int num in randomNumbers)
+{
+    Console.WriteLine(num);
 }
 
 // Game
@@ -55,8 +60,10 @@ for (int i = 0; i < 5; i++)
 if (loopStop)
 {
     Console.WriteLine("You Lose.");
+    Console.ReadKey();
 }
 else
 {
     Console.WriteLine("You Won");
+    Console.ReadKey();
 }
